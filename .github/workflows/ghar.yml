@@ -1,0 +1,41 @@
+name: Deploy to Servers
+
+on:
+  push:
+    branches:
+      - projectA
+      - projectB
+      - projectC
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main branch for server list
+        uses: actions/checkout@v2
+        with:
+          ref: "main"
+          path: "main-branch"
+
+      - name: Checkout project branch
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.ref }}
+          path: "project"
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 'your-server.com' >> ~/.ssh/known_hosts
+        shell: bash
+
+      - name: Sync files to server
+        run: |
+          ENVIRONMENT=$(echo ${{ github.ref_name }} | sed 's/project[A-C]\///') # Extracts the environment directory
+          SERVERS_LIST=$(cat main-branch/${ENVIRONMENT}_servers_list.txt)
+          for SERVER in $SERVERS_LIST; do
+            rsync -avz --delete project/${ENVIRONMENT}/ user@$SERVER:/destination/path/
+          done
+        shell: bash
