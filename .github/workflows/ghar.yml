@@ -12,24 +12,24 @@ jobs:
     runs-on: ghar
     steps:
       - name: Checkout main branch for server list
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: "main"
           path: "main-branch"
 
       - name: Checkout project branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.ref }}
           path: "project"
 
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 'your-server.com' >> ~/.ssh/known_hosts
-        shell: bash
+      # - name: Setup SSH
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+      #     chmod 600 ~/.ssh/id_rsa
+      #     ssh-keyscan -H 'your-server.com' >> ~/.ssh/known_hosts
+      #   shell: bash
 
       - name: Sync files to server
         run: |
