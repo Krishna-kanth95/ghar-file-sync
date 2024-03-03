@@ -9,7 +9,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ghar
     steps:
       - name: Checkout main branch for server list
         uses: actions/checkout@v2
