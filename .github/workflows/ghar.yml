@@ -49,12 +49,10 @@ jobs:
 
       - name: Sync config
         run: |
-          - name: Sync config
-            run: |
-              if [[ -n $(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} | grep "config/") ]]; then
-                for SERVER in $SERVERS; do
-                  rsync -avz --update $BRANCH_NAME/$BRANCH_NAME/$ENVIRONMENT/config/ infadata@$SERVER:/var/data/infadata/config/
-                done
-              else
-                echo "Config folder not modified. Skipping sync."
-              fi
+          if [[ -n $(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }} | grep "config/") ]]; then
+            for SERVER in $SERVERS; do
+              rsync -avz --update $BRANCH_NAME/$BRANCH_NAME/$ENVIRONMENT/config/ infadata@$SERVER:/var/data/infadata/config/
+            done
+          else
+            echo "Config folder not modified. Skipping sync."
+          fi
