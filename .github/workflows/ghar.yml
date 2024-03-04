@@ -1,6 +1,8 @@
 name: Deploy to Servers
 
 on:
+  pull_request_review:
+    types: [submitted]
   push:
     branches:
       - projectA
@@ -9,6 +11,7 @@ on:
 
 jobs:
   deploy:
+    if: github.event_name == 'pull_request_review' && github.event.review.state == 'approved'
     runs-on: self-hosted
     steps:
       - name: Checkout repo
