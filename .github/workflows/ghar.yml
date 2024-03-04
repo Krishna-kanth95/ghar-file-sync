@@ -9,33 +9,42 @@ on:
 
 jobs:
   deploy:
-    runs-on: ghar
+    runs-on: ubuntu-latest
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Fetch all history for all tags and branches
+
       - name: Checkout main branch for server list
         uses: actions/checkout@v3
         with:
-          ref: "main"
-          path: "main-branch"
+          ref: main
+          path: main-branch
 
-      - name: Checkout project branch
-        uses: actions/checkout@v3
+      - name: Set up SSH key for infadata user
+        uses: webfactory/ssh-agent@v0.5.3
         with:
-          ref: ${{ github.ref }}
-          path: "project"
+          ssh-private-key: ${{ secrets.INFADATA_SSH_PRIVATE_KEY }}
 
-      # - name: Setup SSH
-      #   run: |
-      #     mkdir -p ~/.ssh
-      #     echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-      #     chmod 600 ~/.ssh/id_rsa
-      #     ssh-keyscan -H 'your-server.com' >> ~/.ssh/known_hosts
-      #   shell: bash
-
-      - name: Sync files to server
+      - name: Determine environment and server list
         run: |
-          ENVIRONMENT=$(echo ${{ github.ref_name }} | sed 's/project[A-C]\///') # Extracts the environment directory
-          SERVERS_LIST=$(cat main-branch/${ENVIRONMENT}_servers_list.txt)
-          for SERVER in $SERVERS_LIST; do
-            rsync -avz --delete project/${ENVIRONMENT}/ user@$SERVER:/destination/path/
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          ENVIRONMENT=$(echo $BRANCH_NAME | sed 's/project[A-C]//')
+          SERVER_LIST_FILE="${ENVIRONMENT}_servers_list.txt"
+          SERVERS=$(cat main-branch/$SERVER_LIST_FILE)
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+          echo "ENVIRONMENT=$ENVIRONMENT" >> $GITHUB_ENV
+          echo "SERVERS=$SERVERS" >> $GITHUB_ENV
+
+      - name: Sync scripts
+        run: |
+          for SERVER in $SERVERS; do
+            rsync -avz --update $BRANCH_NAME/$BRANCH_NAME/$ENVIRONMENT/scripts/ infadata@$SERVER:/var/data/infadata/shell/
           done
-        shell: bash
+
+      - name: Sync config
+        run: |
+          for SERVER in $SERVERS; do
+            rsync -avz --update $BRANCH_NAME/$BRANCH_NAME/$ENVIRONMENT/config/ infadata@$SERVER:/var/data/infadata/config/
+          done
