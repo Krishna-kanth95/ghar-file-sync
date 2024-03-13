@@ -6,15 +6,21 @@ on:
 jobs:
   sync-files:
     runs-on: ghar
+    environment: development
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          ref: development
 
+      - name: Server IP Display
+        run: echo "Hosts: ${{ vars.hosts }}"
+          
       - name: Sync files
-        uses: ./.github/resuable-actions/rsync-action/
+        uses: ./.github/rsync-action/
         with:
           source: "./"
-          destination: "/home/ubuntu/sync-folder"
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
+          destination: "/home/ec2-user/sync-folder"
+          host: ${{ vars.HOST }}
+          username: ${{ vars.USERNAME }}
           key: ${{ secrets.KEY }}
