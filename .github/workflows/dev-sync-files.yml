@@ -16,9 +16,10 @@ jobs:
       - name: Server IP Display
         continue-on-error: true
         run: |
-          echo "Servers: ${{ vars.HOST }}"
-          for SERVER in ${{ vars.HOST }}; do
-            echo $SERVER
+          echo "Servers: $HOST"
+          IFS=' ' read -ra ADDR <<< "$HOST" # Split HOST into an array using space as delimiter
+          for SERVER in "${ADDR[@]}"; do
+            echo "$SERVER"
           done
           
       - name: Sync files
