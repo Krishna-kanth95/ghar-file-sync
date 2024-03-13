@@ -1,5 +1,4 @@
 name: Sync files to Ec2 servers
-
 on:
   workflow_dispatch:
 
