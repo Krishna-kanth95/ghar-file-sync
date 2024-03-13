@@ -16,7 +16,7 @@ jobs:
       - name: Server IP Display
         continue-on-error: true
         run: |
-          echo "Servers: $HOST"
+          echo "Servers: ${{ vars.HOST }}"
           IFS=' ' read -ra ADDR <<< "$HOST" # Split HOST into an array using space as delimiter
           for SERVER in "${ADDR[@]}"; do
             echo "$SERVER"
