@@ -14,13 +14,10 @@ jobs:
           ref: development
 
       - name: Server IP Display
-        run: echo "Hosts: ${{ vars.hosts }}"
+        run: echo "Hosts: ${{ vars.HOST }}"
           
       - name: Sync files
         uses: ./.github/rsync-action/
         with:
-          source: "./"
           destination: "/home/ec2-user/sync-folder"
           host: ${{ vars.HOST }}
-          username: ${{ vars.USERNAME }}
-          key: ${{ secrets.KEY }}
