@@ -17,4 +17,6 @@ runs:
   steps:
     - name: Rsync
       run: |
-        rsync -avz --delete ${{ inputs.source }} ${{ inputs.username }}@${{ inputs.host }}:${{ inputs.destination }}
+        if [[ -n $(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }}) | grep "scripts/*" ]]; then
+          for SERVER in ${{ inputs.host }}; do
+            rsync -Pavz -e /home/ec2-user/non-prod-key --update scripts/* ${{ inputs.username }}@${{ inputs.host }}:${{ inputs.destination }}
