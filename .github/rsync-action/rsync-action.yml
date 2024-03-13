@@ -1,16 +1,10 @@
 name: rsync action to sync files to remote server
 inputs:
-  source:
-    description: "Source directory to sync"
-    required: true
   destination:
     description: "Destination directory to sync"
     required: true
   host:
     description: "Remote server host"
-    required: true
-  username:
-    description: "Remote server username"
     required: true
 runs:
   using: "composite"
@@ -19,4 +13,7 @@ runs:
       run: |
         if [[ -n $(git diff --name-only ${{ github.base_ref }} ${{ github.head_ref }}) | grep "scripts/*" ]]; then
           for SERVER in ${{ inputs.host }}; do
-            rsync -Pavz -e /home/ec2-user/non-prod-key --update scripts/* ${{ inputs.username }}@${{ inputs.host }}:${{ inputs.destination }}
+            # -o StrictHostKeyChecking=no
+            rsync -Pauvzc -e "ssh -i ~/non-prod-key" --update  scripts/* ec2-user@${{ inputs.host }}:${{ inputs.destination }}
+            # rsync -Pavz -e /home/ec2-user/non-prod-key --update scripts/* ${{ inputs.username }}@${{ inputs.host }}:${{ inputs.destination }}
+          
