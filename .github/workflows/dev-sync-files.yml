@@ -13,7 +13,7 @@ jobs:
           ref: development
 
       - name: Server IP Display
-        run: echo "Hosts: ${{ vars.HOST }}"
+        run: echo "Hello World"
           
       - name: Sync files
         uses: ./.github/rsync-action/
