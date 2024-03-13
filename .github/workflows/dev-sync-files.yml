@@ -12,6 +12,7 @@ jobs:
         continue-on-error: true
         with:
           ref: development
+          fetch-depth: 0
 
       - name: Server IP Display
         continue-on-error: true
