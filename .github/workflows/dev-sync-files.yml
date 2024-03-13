@@ -17,6 +17,9 @@ jobs:
         continue-on-error: true
         run: |
           echo "Servers: ${{ vars.HOST }}"
+          for SERVER in ${{ vars.HOST }}; do
+            echo $SERVER
+          done
           
       - name: Sync files
         uses: ./.github/rsync-action/
