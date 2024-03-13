@@ -4,7 +4,7 @@ on:
 
 jobs:
   sync-files:
-    runs-on: ghar
+    runs-on: ubuntu-latest
     environment: development
     steps:
       - name: Checkout
