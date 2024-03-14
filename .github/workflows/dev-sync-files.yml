@@ -29,10 +29,19 @@ jobs:
         uses: ./.github/rsync-action/
         with:
           destination: "/home/ec2-user/scripts-folder/"
-          host: ${{ vars.HOST }}   
+          host: ${{ vars.HOST }}
+          source-folder: "scripts"     
           
       - name: Sync Parameters
         uses: ./.github/rsync-action/
         with:
           destination: "/home/ec2-user/param-folder/"
           host: ${{ vars.HOST }}
+          source-folder: "scripts"
+          
+      - name: Sync Parameters
+        uses: ./.github/rsync-action/
+        with:
+          destination: "/home/ec2-user/param-folder/"
+          host: ${{ vars.HOST }}
+          source-folder: "parameters"
