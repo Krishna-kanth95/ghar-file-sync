@@ -12,8 +12,9 @@ runs:
     - name: Rsync
       shell: bash
       run: |
-        for SERVER in $HOSTIPS; do
-          echo "Syncing to $SERVER"
-          rsync -Pavzc -e "ssh -i ~/non-prod-key" --update scripts/* ec2-user@${{ inputs.host }}:${{ inputs.destination }}
-        done
+         IFS=' ' read -ra SERVERS <<< "${{ inputs.host }}"
+         for SERVER in "${SERVERS[@]}"; do
+            echo "Syncing to $SERVER"
+            rsync -Pavzc -e "ssh -i ~/non-prod-key" --update scripts/* ec2-user@$SERVER:${{ inputs.destination }}
+         done
            
