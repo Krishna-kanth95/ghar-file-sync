@@ -25,8 +25,14 @@ jobs:
             echo "$SERVER"
           done
           
-      - name: Sync files
+      - name: Sync Scripts
         uses: ./.github/rsync-action/
         with:
-          destination: "/home/ec2-user/sync-folder/"
+          destination: "/home/ec2-user/scripts-folder/"
+          host: ${{ vars.HOST }}   
+          
+      - name: Sync Parameters
+        uses: ./.github/rsync-action/
+        with:
+          destination: "/home/ec2-user/param-folder/"
           host: ${{ vars.HOST }}
