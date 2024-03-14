@@ -20,7 +20,7 @@ jobs:
       - name: Server IP Display
         continue-on-error: true
         run: |
-          echo "Servers: ${{ vars.HOST }}"
+          echo "Servers: ${{ env.HOST }}"
           IFS=' ' read -ra ADDR <<< "$HOST" # Split HOST into an array using space as delimiter
           for SERVER in "${ADDR[@]}"; do
             echo "$SERVER"
@@ -30,4 +30,4 @@ jobs:
         uses: ./.github/rsync-action/
         with:
           destination: "/home/ec2-user/sync-folder"
-          host: ${{ vars.HOST }}
+          host: ${{ env.HOST }}
