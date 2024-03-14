@@ -6,6 +6,9 @@ inputs:
   host:
     description: "Remote server host"
     required: true
+  source-folder:
+    description: "Remote server host"
+    required: true
 runs:
   using: "composite"
   steps:
@@ -15,6 +18,6 @@ runs:
          IFS=' ' read -ra SERVERS <<< "${{ inputs.host }}"
          for SERVER in "${SERVERS[@]}"; do
             echo "Syncing to $SERVER"
-            rsync -Pavzc -e "ssh -i ~/non-prod-key" --update ${{ github.workspace }}/scripts/* ec2-user@$SERVER:${{ inputs.destination }}
+            rsync -Pavzc -e "ssh -i ~/non-prod-key" --update ${{ github.workspace }}/${{ inputs.source-folder }}/* ec2-user@$SERVER:${{ inputs.destination }}
          done
            
