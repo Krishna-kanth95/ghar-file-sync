@@ -15,6 +15,6 @@ runs:
          IFS=' ' read -ra SERVERS <<< "${{ inputs.host }}"
          for SERVER in "${SERVERS[@]}"; do
             echo "Syncing to $SERVER"
-            rsync -Pavzc -e "ssh -i ~/non-prod-key" --update scripts/* ec2-user@$SERVER:${{ inputs.destination }}
+            rsync -Pavzc -e "ssh -i ~/non-prod-key" --update ${{ github.workspace }}/scripts/* ec2-user@$SERVER:${{ inputs.destination }}
          done
            
