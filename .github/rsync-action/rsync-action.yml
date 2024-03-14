@@ -10,6 +10,7 @@ runs:
   using: "composite"
   steps:
     - name: Rsync
+      shell: bash
       run: |
         for SERVER in $HOSTIPS; do
           echo "Syncing to $SERVER"
