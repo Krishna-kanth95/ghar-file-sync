@@ -1,0 +1,20 @@
+name: rsync action to sync files to remote server
+inputs:
+  destination:
+    description: "Destination directory to sync"
+    required: true
+  host:
+    description: "Remote server host"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Rsync
+      shell: bash
+      run: |
+         IFS=' ' read -ra SERVERS <<< "${{ inputs.host }}"
+         for SERVER in "${SERVERS[@]}"; do
+            echo "Syncing to $SERVER"
+            rsync -Pavzc -e "ssh -i ~/non-prod-key" --update ${{ github.workspace }}/scripts/* ec2-user@$SERVER:${{ inputs.destination }}
+         done
+           
