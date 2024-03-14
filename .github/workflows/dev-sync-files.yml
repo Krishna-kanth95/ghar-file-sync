@@ -4,7 +4,10 @@ on:
   push:
     branches:
       - development
-
+concurrency: 
+  group: sync-files-${{ github.ref }}
+  cancel-in-progress: false
+  
 jobs:
   sync-files:
     runs-on: [self-hosted]
